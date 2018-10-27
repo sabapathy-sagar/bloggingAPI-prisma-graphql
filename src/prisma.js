@@ -52,9 +52,11 @@ prisma.mutation.updatePost({
     console.log(JSON.stringify(data, undefined, 2));
 })
 
+//takes authorId and post data to create a post for a user,
+// returns the user with the created post
 const createPostForUser = async (authorId, postData) => {
 
-    const post = await prisma.mutation.createPost({
+    const postId = await prisma.mutation.createPost({
         data: {
             ...postData,
             author: {
@@ -81,3 +83,30 @@ createPostForUser('cjnmt944f00100a315wxas0kd', {
 }).then((data) => {
     console.log(JSON.stringify(data, undefined, 2));
 })
+
+//takes a postId and post data to be updated, 
+//return the user with the updated post
+const updatePostForUser = async (postId, postData) => {
+    const authorId = await prisma.mutation.updatePost({
+        data: {
+            ...postData
+        },
+        where: {
+            id: postId
+        }
+    }, '{author {id}}')
+
+    const user = await prisma.query.user({
+        where: {
+            id: authorId
+        }
+    }, '{id name posts {id title}}}')
+
+    return user;
+}
+
+updatePostForUser('cjnmsyhbt000i0a31zv974goy', {
+    published: false
+}).then((data) => {
+    console.log(JSON.stringify(data, undefined, 2));
+});
