@@ -51,3 +51,33 @@ prisma.mutation.updatePost({
 }).then((data) => {
     console.log(JSON.stringify(data, undefined, 2));
 })
+
+const createPostForUser = async (authorId, postData) => {
+
+    const post = await prisma.mutation.createPost({
+        data: {
+            ...postData,
+            author: {
+                connect: {
+                    id: authorId
+                }
+            }
+        }
+    }, '{id}')
+
+    const user = await prisma.query.user({
+        where: {
+            id: authorId
+        }
+    }, '{id name posts {id title}}')
+
+    return user;
+};
+
+createPostForUser('cjnmt944f00100a315wxas0kd', {
+    title: 'async is great',
+    body: 'yes it is',
+    published: true
+}).then((data) => {
+    console.log(JSON.stringify(data, undefined, 2));
+})
