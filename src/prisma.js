@@ -35,3 +35,19 @@ prisma.mutation.createPost({
 }).then((data) => {
     console.log(JSON.stringify(data, undefined, 2));
 })
+
+//updatePost mutation
+prisma.mutation.updatePost({
+    data: {
+        published: false
+    },
+    where: {
+       id: 'cjnmsyhbt000i0a31zv974goy' 
+    }
+}, '{id title published}').then((data) => {
+    console.log(data);
+    //query to get all posts
+    return prisma.query.posts(null, '{id title published}');
+}).then((data) => {
+    console.log(JSON.stringify(data, undefined, 2));
+})
