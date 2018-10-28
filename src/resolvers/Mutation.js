@@ -41,33 +41,20 @@ const Mutation = {
         }, info)
 
     },
-    createPost (parent, args, {db, pubsub}, info) {
-        const userExists = db.users.some((user) => user.id === args.data.author);
+    createPost (parent, args, {prisma}, info) {
 
-        if (!userExists) {
-            throw new Error('Author does not exist');
-        }
-
-        const post = {
-            id: new Date().valueOf(),
-            ...args.data
-        }
-
-        db.posts.push(post);
-
-        //publish the post as soon as it is created, so that the listeners subscribed 
-        //to 'post' subscription channel are notified
-        if(post.published){
-            pubsub.publish('post', {
-                post: {
-                    mutation: 'CREATED',
-                    data: post
+        return prisma.mutation.createPost({
+            data: {
+                title: args.data.title,
+                body: args.data.body,
+                published: args.data.published,
+                author: {
+                    connect: {
+                        id: args.data.author
+                    }
                 }
-            })
-        }
-        
-
-        return post;
+            }
+        }, info)
     },
     deletePost (parent, args, {db, pubsub}, info) {
         const postIndex = db.posts.findIndex((post) => post.id === args.id);
