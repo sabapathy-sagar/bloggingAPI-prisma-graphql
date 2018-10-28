@@ -56,29 +56,14 @@ const Mutation = {
             }
         }, info)
     },
-    deletePost (parent, args, {db, pubsub}, info) {
-        const postIndex = db.posts.findIndex((post) => post.id === args.id);
+    async deletePost (parent, args, {prisma}, info) {
 
-        if (postIndex === -1) {
-            throw new Error('post not found!');
-        }
+        return prisma.mutation.deletePost({
+            where: {
+                id: args.id
+            }
+        }, info)
 
-        const deletedPosts = db.posts.splice(postIndex, 1);
-
-        db.comments = db.comments.filter((comment) => comment.post !== args.id);
-
-        //publish post that has the 'published' flag set to true
-        if(deletedPosts[0].published) {
-            pubsub.publish('post', {
-                post: {
-                    mutation: 'DELETED',
-                    data: deletedPosts[0]
-                }
-            })
-        }
-
-
-        return deletedPosts[0];
     },
     updatePost (parent, args, {db, pubsub}, info) {
         const {id, data} = args;
