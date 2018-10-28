@@ -1,19 +1,16 @@
 const Mutation = {
-    createUser (parent, args, {db}, info) {
-        const emailTaken = db.users.some((user) => user.email === args.data.email);
+    async createUser (parent, args, {prisma}, info) {
+
+        const emailTaken = await prisma.exists.User({email: args.data.email});
 
         if (emailTaken) {
             throw new Error('Email taken');
         }
 
-        const user = {
-            id: new Date().valueOf(),
-            ...args.data
-        }
-
-        db.users.push(user);
+        const user = await prisma.mutation.createUser({data: args.data}, info);
 
         return user;
+
     },
     deleteUser (parent, args, {db}, info) {
         //find the array index of the user which must be deleted
