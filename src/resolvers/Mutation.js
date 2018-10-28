@@ -12,36 +12,23 @@ const Mutation = {
         return user;
 
     },
-    deleteUser (parent, args, {db}, info) {
-        //find the array index of the user which must be deleted
-        const userIndex = db.users.findIndex((user) => user.id === args.id);
+    async deleteUser (parent, args, {prisma}, info) {
 
-        //if the user is not found then throw an error
-        if (userIndex === -1) {
-            throw new Error('User not found!');
-        };
+        const userExists = await prisma.exists.User({id: args.id})
 
-        //delete the user from the db.users array
-        const deletedUsers = db.users.splice(userIndex, 1);
+        if(!userExists){
+            throw new Error('User does not exist!');
+        }
 
-        //filter out the db.posts of the deleted user
-        db.posts = db.posts.filter((post) => {
-            //find the post created by the user
-            const match = post.author === args.id;
+        const user = await prisma.mutation.deleteUser(
+            {
+                where: {
+                    id: args.id
+                }
+            }, info
+        );
 
-            if(match){
-                //if the post was found, delete the db.comments associated to the user
-                //by filtering out the db.comments made by the user
-                db.comments = db.comments.filter((comment) => comment.author !== args.id);
-            }
-
-            return !match;
-        });
-
-        //filter out all the db.comments associated to the user
-        db.comments = db.comments.filter((comment) => comment.author !== args.id);
-
-        return deletedUsers[0];
+        return user;
 
     },
     updateUser (parent, args, {db}, info) {
