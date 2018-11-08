@@ -2,17 +2,18 @@ const Subscription = {
     comment: {
         subscribe (parent, args, ctx, info) {
             const {postId} = args;
-            const {db, pubsub} = ctx;
+            const {prisma} = ctx;
 
-            //check if post exists and is published
-            const post = db.posts.find((post) => (post.id === postId) && post.published );
+            return prisma.subscription.comment({
+                where: {
+                    node: {
+                        post: {
+                            id: postId
+                        }
+                    }
+                }
+            }, info);
 
-            if(!post){
-                throw new Error('post does not exist!');
-            }
-
-            //set up the channel, with a channel name called 'comment postId'
-            return pubsub.asyncIterator(`comment ${postId}`);
         }
     },
     post: {
