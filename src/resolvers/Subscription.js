@@ -3,7 +3,8 @@ const Subscription = {
         subscribe (parent, args, ctx, info) {
             const {postId} = args;
             const {prisma} = ctx;
-
+            
+            //subscribe to commnets of a particular post
             return prisma.subscription.comment({
                 where: {
                     node: {
@@ -18,10 +19,16 @@ const Subscription = {
     },
     post: {
         subscribe (parent, args, ctx, info) {
-            const {db, pubsub} = ctx;
+            const { prisma } = ctx;
 
-            //set up channel, with channel name 'post'
-            return pubsub.asyncIterator('post');
+            //subscribe to posts that are published
+            return prisma.subscription.post({
+                where: {
+                    node: {
+                        published: true 
+                    }
+                }
+            }, info)
 
         }
     }
