@@ -30,6 +30,9 @@ const Mutation = {
         };
 
     },
+    async login (parent, args, {prisma}, info) {
+
+    },
     async deleteUser (parent, args, {prisma}, info) {
 
         const userExists = await prisma.exists.User({id: args.id})
