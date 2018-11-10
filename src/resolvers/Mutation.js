@@ -60,7 +60,8 @@ const Mutation = {
         }
 
     },
-    async deleteUser (parent, args, {prisma}, info) {
+    async deleteUser (parent, args, {prisma, request}, info) {
+        const userId = getUserId(request);
 
         const userExists = await prisma.exists.User({id: args.id})
 
@@ -71,7 +72,7 @@ const Mutation = {
         const user = await prisma.mutation.deleteUser(
             {
                 where: {
-                    id: args.id
+                    id: userId
                 }
             }, info
         );
