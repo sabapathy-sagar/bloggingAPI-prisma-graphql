@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 const Mutation = {
     async createUser (parent, args, {prisma}, info) {
@@ -21,9 +22,12 @@ const Mutation = {
                 ...args.data,
                 password
             }
-        }, info);
+        });
 
-        return user;
+        return {
+            user,
+            token: jwt.sign({ userId: user.id}, 'thisisasecret')
+        };
 
     },
     async deleteUser (parent, args, {prisma}, info) {
