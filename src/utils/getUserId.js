@@ -8,12 +8,12 @@ const getUserId = (request) => {
         throw new Error('Authentication required!');
     }
 
-    const token = header.replace('Bearer ', '');
+    const token = header.replace('Bearer ', '')
 
     //verify if it is the valid token of the logged in user
     const decoded = jwt.verify(token, 'thisisasecret');
 
-    return decoded;
+    return decoded.userId;
 }
 
 export {getUserId as default}
