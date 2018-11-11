@@ -35,6 +35,29 @@ const Query = {
         return prisma.query.posts(opArgs, info);
 
     },
+    async myPosts (parent, args, {prisma, request}, info) {
+        //get the userId based on the auth token
+        const userId = getUserId(request);
+
+        const opArgs = {
+            where: {
+                author: {
+                    id: userId
+                }
+            }
+        };
+
+        if (args.query) {
+            opArgs.where.OR = [{
+                title_contains: args.query
+            }, {
+                body_contains: args.query
+            }]
+        }
+
+        return prisma.query.posts(opArgs, info);
+
+    },
     comments (parent, args, { prisma }, info) {
         //return db.comments;
 
