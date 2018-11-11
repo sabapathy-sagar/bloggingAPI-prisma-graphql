@@ -1,3 +1,5 @@
+import getUserId from '../utils/getUserId';
+
 const Query = {
     users (parent, args, {prisma}, info) {
         //operation arguments object
@@ -36,6 +38,34 @@ const Query = {
         //return db.comments;
 
         return prisma.query.comments(null, info)
+    },
+    async post (parent, args, {prisma, request}, info) {
+        //set the second argument (requireAuth) of getUserId method to false, 
+        //so that the post query can be made even by anonymous users
+        const userId = getUserId(request, false);
+
+        //if user anonymous, return only published post
+        //if user is logged in, return both published and unpublished post
+        const posts = await prisma.query.posts({
+            where: {
+                id: args.id,
+                OR: [{
+                    published: true
+                }, {
+                    author: {
+                        id: userId
+                    }
+                }
+                ]
+            }
+        }, info) 
+
+        if (posts.length === 0) {
+            throw new Error('Post not found!');
+        }
+
+        return posts[0];
+
     }
 };
 
