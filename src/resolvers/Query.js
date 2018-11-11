@@ -39,6 +39,17 @@ const Query = {
 
         return prisma.query.comments(null, info)
     },
+    async me (parent, args, {prisma, request}, info) {
+        const userId = getUserId(request);
+
+        const user = await prisma.query.user({
+            where: {
+                id: userId
+            }
+        }, info)
+
+        return user;
+    },
     async post (parent, args, {prisma, request}, info) {
         //set the second argument (requireAuth) of getUserId method to false, 
         //so that the post query can be made even by anonymous users
