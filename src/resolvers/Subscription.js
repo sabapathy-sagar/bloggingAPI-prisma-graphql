@@ -31,6 +31,25 @@ const Subscription = {
             }, info)
 
         }
+    },
+    myPost: {
+        subscribe (parent, args, ctx, info) {
+            const {prisma, request} = ctx;
+
+            //get the user id of the authorized user
+            const userId = getUserId(request);
+
+            //subscribe to individual user's posts
+            return prisma.subscription.post({
+                where: {
+                    node: {
+                        author: {
+                            id: userId
+                        }
+                    }
+                }
+            }, info)
+        }
     }
 
 };
