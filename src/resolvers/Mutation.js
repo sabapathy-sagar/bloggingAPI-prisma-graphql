@@ -155,6 +155,16 @@ const Mutation = {
     async createComment (parent, args, {prisma, request}, info) {
         const userId = getUserId(request);
 
+        //create comment only on published posts
+        const postExists = await prisma.exists.Post({
+            id: args.data.post
+        });
+
+
+        if (!postExists) {
+            throw new Error('Post does not exists');
+        }
+
         return prisma.mutation.createComment({
             data: {
                 text: args.data.text,
