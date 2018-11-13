@@ -145,6 +145,16 @@ const Mutation = {
             throw new Error('Unable to delete post');
         }
 
+        //Delete all comments when unpublishing a post
+        const isPublished = await prisma.exists.Post({
+            id: args.id,
+            published: true
+        });
+
+        if (isPublished && args.data.published === false) {
+            await prisma.mutation.deleteManyComments({where: { post: { id: args.id}}})
+        }
+
         return prisma.mutation.updatePost({
             data: args.data,
             where: {
