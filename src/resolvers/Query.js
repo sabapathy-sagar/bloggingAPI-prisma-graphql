@@ -45,6 +45,9 @@ const Query = {
         const userId = getUserId(request);
 
         const opArgs = {
+            first: args.first,
+            skip: args.skip,
+            after: args.after,
             where: {
                 author: {
                     id: userId
@@ -64,9 +67,15 @@ const Query = {
 
     },
     comments (parent, args, { prisma }, info) {
+
+        const opArgs = {
+            first: args.first,
+            skip: args.skip,
+            after: args.after
+        }
         //return db.comments;
 
-        return prisma.query.comments(null, info)
+        return prisma.query.comments(opArgs, info)
     },
     async me (parent, args, {prisma, request}, info) {
         const userId = getUserId(request);
