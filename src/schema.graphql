@@ -1,11 +1,11 @@
-# import UserOrderByInput from './generated/prisma.graphql'
+# import UserOrderByInput, PostOrderByInput, CommentOrderByInput from './generated/prisma.graphql'
 type Query {
         me: User!
         post(id: ID!): Post!
         users(query: String, first: Int, skip: Int, after: String, orderBy: UserOrderByInput): [User!]!
-        posts(query: String, first: Int, skip: Int, after: String): [Post!]!
-        myPosts(query: String, first: Int, skip: Int, after: String): [Post!]!
-        comments(first: Int, skip: Int, after: String): [Comment!]!
+        posts(query: String, first: Int, skip: Int, after: String, orderBy: PostOrderByInput): [Post!]!
+        myPosts(query: String, first: Int, skip: Int, after: String, orderBy: PostOrderByInput): [Post!]!
+        comments(first: Int, skip: Int, after: String, orderBy: CommentOrderByInput): [Comment!]!
 }
 type Mutation {
         createUser(data: CreateUserInput!): AuthPayload!
