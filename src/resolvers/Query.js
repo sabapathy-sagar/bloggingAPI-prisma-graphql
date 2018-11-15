@@ -5,7 +5,8 @@ const Query = {
         //operation arguments object
         const opArgs = {
             first: args.first,
-            skip: args.skip
+            skip: args.skip,
+            after: args.after
         };
 
         if(args.query){
@@ -22,6 +23,7 @@ const Query = {
         const opArgs = {
             first: args.first,
             skip: args.skip,
+            after: args.after,
             where: {
                 published: true
             }
