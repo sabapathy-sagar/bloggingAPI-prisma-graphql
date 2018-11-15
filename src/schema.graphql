@@ -78,7 +78,7 @@ type User {
         password: String!
         posts: [Post!]
         comments: [Comment!]!
-        updateAt: String!
+        updatedAt: String!
         createdAt: String!
 }
 type Post {
